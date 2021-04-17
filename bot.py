@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client()
+client = commands.Bot(command_prefix='%')
 
 
 @client.event
