@@ -1,3 +1,4 @@
+from cogs.test import Test
 import discord
 import os
 from dotenv import load_dotenv
@@ -14,12 +15,10 @@ async def on_ready():
     print('Connected')
 
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+for filename in os.listdir("./cogs"):
+    if filename.endswith(".py") and filename != "__init__.py":
+        client.load_extension(f'cogs.{filename[:-3]}')
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+
 
 client.run(TOKEN)
