@@ -27,17 +27,14 @@ class create_channel(commands.Cog):
             # checks to see if the category has already been created, if so set value to True
             list_of_cats = guild.categories
             valid = False
-            print(list_of_cats)
             for j in list_of_cats:
                 if args2.lower() == j.name.lower():
-                    print('valid is True')
                     valid = True
                     category = j
 
             # creates the category if it does not exist. if it does exist, move on
             if valid == False:
                 category = await guild.create_category_channel(args2.lower())
-                print(category)
 
             channel_number = int(args1)
 

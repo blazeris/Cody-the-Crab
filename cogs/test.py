@@ -4,7 +4,6 @@ from discord.ext import commands
 class Test(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        print("TEAKSJDTHJKDAFHKJ")
 
     @commands.command()
     async def ping(self, context):
