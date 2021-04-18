@@ -6,7 +6,7 @@ class Test(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(description = 'Rock Paper Scissor with the Crab!')
     async def rps(self, context, args1):
         num = random.randrange(1,3)
         #✌️ = 1, ✊ = 2, ✋ = 3
