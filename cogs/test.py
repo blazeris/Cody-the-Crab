@@ -6,9 +6,11 @@ class Test(commands.Cog):
         self.bot = bot
         print("TEAKSJDTHJKDAFHKJ")
 
-    @commands.command(name = 'ping', description = 'When ping, the bot will PONG')
+    @commands.command()
     async def ping(self, context):
+        print("in ping")
         await context.send("PONG")
+
 
 def setup(bot):
     bot.add_cog(Test(bot))
