@@ -19,26 +19,35 @@ class delete_channel(commands.Cog):
             # checks to see if the category has already been created, if so set the category to i
             list_of_cats = guild.categories
             for i in list_of_cats:
-                if name == i.name.lower():
+                if name.lower() == i.name.lower():
                     category = i
                     
             # if the category does not exist, leave the command
             if category == "":
                 await context.send("That category does not exist!")
                 return
-            
-            # gets the specifc role for the category
-            role = discord.utils.get(context.message.guild.roles, name=name)
 
-            # a list of channels that are under the category
-            channels = category.channels
 
+            text_channels = category.text_channels
+
+            # while len(c)
             # deletes the channels in the category, the category and the role for that category
-            for channel in channels:
-                await channel.delete()
-            await category.delete()
-            await role.delete()
+            i = 1
+            while len(text_channels) > 0:
+                text_channels = category.text_channels
+                vc_channels = category.voice_channels
 
+                await text_channels[0].delete()
+                await vc_channels[0].delete()
+
+                text_channels = category.text_channels
+                vc_channels = category.voice_channels
+
+                role = discord.utils.get(context.message.guild.roles, name=f'{name.lower()} {i}')
+                await role.delete()
+                i += 1
+
+            await category.delete()
             await context.message.add_reaction('👍')
 
         except ValueError:

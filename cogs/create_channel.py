@@ -1,3 +1,4 @@
+import asyncio
 from discord.channel import CategoryChannel
 from discord.ext import commands
 import discord
@@ -15,40 +16,54 @@ class create_channel(commands.Cog):
     description="<number of channels to add> <category name> : adds the category and amount of text and voice channels to that category")
     async def createcategory(self, context, args1, args2):
         guild = context.guild
+        
         try:
+            category = ""
             # checks to see if a user is not an admin and tries to run the command, stop
             if not context.message.author.guild_permissions.administrator:
                 await context.send("You cannot use this command, you are not an admin")
                 return
             
-            # checks to see if the category has already been created, if so stop the command
+            # checks to see if the category has already been created, if so set value to True
             list_of_cats = guild.categories
-            for i in list_of_cats:
-                if args2.lower() == i.name.lower():
-                    await context.send("That category has already been created")
-                    return
+            valid = False
+            print(list_of_cats)
+            for j in list_of_cats:
+                if args2.lower() == j.name.lower():
+                    print('valid is True')
+                    valid = True
+                    category = j
+                    
             
+            # creates the category if it does not exist. if it does exist, move on
+            if valid == False:
+                category = await guild.create_category_channel(args2.lower())
+                print(category)
             
-            # creates the role and the channel for the given name
             channel_number = int(args1)
-            await guild.create_category_channel(args2.lower())
-            await guild.create_role(name=args2.lower())
 
-
-
-            # gets the name of the category the user is trying to create
+            # creates the category name
             category_name = discord.utils.get(context.guild.categories, name=args2.lower())
-            specific_role = get(guild.roles, name = args2.lower())
-            # overwrites certain permissions, making those with a certain role only be able to look at the category
-            overwrites = {
-                guild.default_role: discord.PermissionOverwrite(read_messages=False),
-                guild.me: discord.PermissionOverwrite(read_messages=True),
-                specific_role: discord.PermissionOverwrite(read_messages=True)
-            }
-
+            
+            # if the channels are not created but the category is, adds them to the category
             for i in range(channel_number):
-                await guild.create_text_channel(f'{args2.lower()} {i + 1}',overwrites = overwrites, category=category_name)
-                await guild.create_voice_channel(f'{args2.lower()} {i + 1}', overwrites = overwrites, category=category_name)
+                category_channels = category.channels
+
+                if discord.utils.get(category_channels, name=str(i+1)) is None:
+                    await guild.create_role(name = f'{args2.lower()} {i + 1}')
+                    # await asyncio.sleep(0.05)
+                    specific_role = discord.utils.get(guild.roles, name = f'{args2.lower()} {i+1}')
+                    overwrites = {
+                    guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                    specific_role: discord.PermissionOverwrite(read_messages=True)
+                    }
+
+                    # stops here, \/\/ breaks
+                    await guild.create_text_channel(f'{i+1}',overwrites = overwrites, category=category_name)
+                    # await asyncio.sleep(0.05)
+                    await guild.create_voice_channel(f'{i+1}', overwrites = overwrites, category=category_name)
+                    # await asyncio.sleep(0.05)
+                
             await context.message.add_reaction('👍')
         
         except ValueError:
