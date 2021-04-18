@@ -32,3 +32,4 @@ Commands
   
 %join <category name> <group number>
   assigns you a role to chosen section and group number
+
