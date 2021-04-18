@@ -54,17 +54,20 @@ class SetReminder(commands.Cog):
             return
 
         for set in data.each():
-            for reminderKey in set.val()['reminders'].keys():
-                reminder = set.val()['reminders'][reminderKey]
-                reminder_datetime = datetime.datetime(
-                    reminder['year'], reminder['month'], reminder['day'], hour=reminder['hour'], minute=reminder['minute'])
-                message = reminder['msg']
-                time_diff = datetime.datetime.now() - reminder_datetime
-                if time_diff.total_seconds() < 15 and time_diff.total_seconds() >= -15:
-                    await self.sendMessage(set.key(), message)
-                if time_diff.total_seconds() > 15:
-                    firebase.DB_remove(
-                        "servers/" + set.key() + "/reminders/" + reminderKey)
+            try:
+                for reminderKey in set.val()['reminders'].keys():
+                    reminder = set.val()['reminders'][reminderKey]
+                    reminder_datetime = datetime.datetime(
+                        reminder['year'], reminder['month'], reminder['day'], hour=reminder['hour'], minute=reminder['minute'])
+                    message = reminder['msg']
+                    time_diff = datetime.datetime.now() - reminder_datetime
+                    if time_diff.total_seconds() < 15 and time_diff.total_seconds() >= -15:
+                        await self.sendMessage(set.key(), message)
+                    if time_diff.total_seconds() > 15:
+                        firebase.DB_remove(
+                            "servers/" + set.key() + "/reminders/" + reminderKey)
+            except Exception:
+                pass
 
     async def sendMessage(self, serverID, msg):
         # guild = await self.bot.fetch_guild(serverID)
