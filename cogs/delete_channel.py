@@ -2,6 +2,7 @@ import discord
 import asyncio
 from discord.ext import commands
 from discord.utils import get
+from bot import firebase
 
 
 class delete_channel(commands.Cog):
@@ -54,6 +55,8 @@ class delete_channel(commands.Cog):
                 await asyncio.sleep(0.1)
                 i += 1
 
+            firebase.DB_remove('servers/' + str(context.guild.id) +
+                               '/createdroles/' + str(category.name))
             await category.delete()
             await context.message.add_reaction('✅')
 

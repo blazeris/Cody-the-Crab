@@ -29,17 +29,14 @@ class create_channel(commands.Cog):
             # checks to see if the category has already been created, if so set value to True
             list_of_cats = guild.categories
             valid = False
-            print(list_of_cats)
             for j in list_of_cats:
                 if args2.lower() == j.name.lower():
-                    print('valid is True')
                     valid = True
                     category = j
 
             # creates the category if it does not exist. if it does exist, move on
             if valid == False:
                 category = await guild.create_category_channel(args2.lower())
-                print(category)
 
             channel_number = int(args1)
 
@@ -47,7 +44,13 @@ class create_channel(commands.Cog):
             category_name = discord.utils.get(
                 context.guild.categories, name=args2.lower())
 
-            created_roles = []
+            data = firebase.DB_get(
+                'servers/' + str(context.guild.id))
+            try:
+                print(data.val()['createdroles'][category_name.name])
+                created_roles = data.val()['createdroles'][category_name.name]
+            except KeyError:
+                created_roles = []
             # if the channels are not created but the category is, adds them to the category
             for i in range(channel_number):
                 if i < 25:
@@ -70,8 +73,12 @@ class create_channel(commands.Cog):
                         await asyncio.sleep(0.1)
                         await guild.create_voice_channel(f'{i+1}', overwrites=overwrites, category=category_name)
                         await asyncio.sleep(0.1)
-            firebase.DB_set({category_name.name: created_roles},
-                            'servers/' + str(context.guild.id) + '/createdroles')
+
+            list_to_dict = {}
+            for j in range(len(created_roles)):
+                list_to_dict[j] = created_roles[j]
+            firebase.DB_set(list_to_dict,
+                            'servers/' + str(context.guild.id) + '/createdroles/' + str(category_name.name))
             await context.message.add_reaction('✅')
 
         except ValueError:
