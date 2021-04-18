@@ -5,25 +5,25 @@ import discord
 from discord.utils import get
 import random
 
+
 class create_channel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
 
     # args 1 = number of channels to create
     # args 2 = category name
-    @commands.command(name="createcategory", 
-    description="<number of channels to add> <category name> : adds the category and amount of text and voice channels to that category")
+    @commands.command(name="createcategory",
+                      description="<number of channels to add> <category name> : adds the category and amount of text and voice channels to that category")
     async def createcategory(self, context, args1, args2):
         guild = context.guild
-        
+
         try:
             category = ""
             # checks to see if a user is not an admin and tries to run the command, stop
             if not context.message.author.guild_permissions.administrator:
                 await context.send("You cannot use this command, you are not an admin")
                 return
-            
+
             # checks to see if the category has already been created, if so set value to True
             list_of_cats = guild.categories
             valid = False
@@ -33,42 +33,45 @@ class create_channel(commands.Cog):
                     print('valid is True')
                     valid = True
                     category = j
-                    
-            
+
             # creates the category if it does not exist. if it does exist, move on
             if valid == False:
                 category = await guild.create_category_channel(args2.lower())
                 print(category)
-            
+
             channel_number = int(args1)
 
             # creates the category name
-            category_name = discord.utils.get(context.guild.categories, name=args2.lower())
-            
+            category_name = discord.utils.get(
+                context.guild.categories, name=args2.lower())
+
             # if the channels are not created but the category is, adds them to the category
             for i in range(channel_number):
-                category_channels = category.channels
+                if i < 50:
+                    category_channels = category.channels
 
-                if discord.utils.get(category_channels, name=str(i+1)) is None:
-                    await guild.create_role(name = f'{args2.lower()} {i + 1}')
-                    # await asyncio.sleep(0.05)
-                    specific_role = discord.utils.get(guild.roles, name = f'{args2.lower()} {i+1}')
-                    overwrites = {
-                    guild.default_role: discord.PermissionOverwrite(read_messages=False),
-                    specific_role: discord.PermissionOverwrite(read_messages=True)
-                    }
+                    if discord.utils.get(category_channels, name=str(i+1)) is None:
+                        await guild.create_role(name=f'{args2.lower()} {i + 1}')
+                        await asyncio.sleep(0.1)
+                        specific_role = discord.utils.get(
+                            guild.roles, name=f'{args2.lower()} {i+1}')
+                        overwrites = {
+                            guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                            specific_role: discord.PermissionOverwrite(
+                                read_messages=True)
+                        }
 
-                    # stops here, \/\/ breaks
-                    await guild.create_text_channel(f'{i+1}',overwrites = overwrites, category=category_name)
-                    # await asyncio.sleep(0.05)
-                    await guild.create_voice_channel(f'{i+1}', overwrites = overwrites, category=category_name)
-                    # await asyncio.sleep(0.05)
-                
+                        # stops here, \/\/ breaks
+                        await guild.create_text_channel(f'{i+1}', overwrites=overwrites, category=category_name)
+                        await asyncio.sleep(0.1)
+                        await guild.create_voice_channel(f'{i+1}', overwrites=overwrites, category=category_name)
+                        await asyncio.sleep(0.1)
+
             await context.message.add_reaction('👍')
-        
+
         except ValueError:
             await context.send("the second argument needs to be an integer!")
-    
+
+
 def setup(bot):
     bot.add_cog(create_channel(bot))
-    
