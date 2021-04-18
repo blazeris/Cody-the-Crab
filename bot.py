@@ -11,7 +11,6 @@ client = commands.Bot(command_prefix='%')
 firebase = fb.FirebaseConnection()
 
 
-
 @client.event
 async def on_ready():
     print('Connected')
