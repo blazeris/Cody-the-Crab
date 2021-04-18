@@ -2,6 +2,7 @@ import discord
 import asyncio
 from discord.ext import commands
 from discord.utils import get
+from bot import firebase
 
 
 class delete_channel(commands.Cog):
@@ -15,6 +16,7 @@ class delete_channel(commands.Cog):
         try:
             # checks to see if a user is not an admin and tries to run the command, stop
             if not context.message.author.guild_permissions.administrator:
+                await context.message.add_reaction('❌')
                 await context.send("You cannot use this command, you are not an admin")
                 return
 
@@ -26,6 +28,7 @@ class delete_channel(commands.Cog):
 
             # if the category does not exist, leave the command
             if category == "":
+                await context.message.add_reaction('❌')
                 await context.send("That category does not exist!")
                 return
 
@@ -52,10 +55,13 @@ class delete_channel(commands.Cog):
                 await asyncio.sleep(0.1)
                 i += 1
 
+            firebase.DB_remove('servers/' + str(context.guild.id) +
+                               '/createdroles/' + str(category.name))
             await category.delete()
-            await context.message.add_reaction('👍')
+            await context.message.add_reaction('✅')
 
         except ValueError:
+            await context.message.add_reaction('❌')
             await context.send("There seems to be an error!")
 
 
