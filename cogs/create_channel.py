@@ -47,7 +47,7 @@ class create_channel(commands.Cog):
 
             # if the channels are not created but the category is, adds them to the category
             for i in range(channel_number):
-                if i < 50:
+                if i < 25:
                     category_channels = category.channels
 
                     if discord.utils.get(category_channels, name=str(i+1)) is None:
