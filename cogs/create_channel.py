@@ -9,13 +9,24 @@ import random
 class create_channel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
+        
     # args 1 = number of channels to create
     # args 2 = category name
     @commands.command(name="createcategory",
                       description="<number of channels to add> <category name> : adds the category and amount of text and voice channels to that category")
     async def createcategory(self, context, args1, args2):
         guild = context.guild
+        #Create role-assign channel
+        channels = guild.text_channels
+        found = False
+        for chnl in channels:
+            if chnl.name == "role-assign":
+                found = True
+                await context.send("role-assign channel already exists")
+                break
+        if not found:
+            await guild.create_text_channel("role-assign")
+            await context.send("role-assign channel created")
 
         try:
             category = ""
