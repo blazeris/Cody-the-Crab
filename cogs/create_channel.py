@@ -4,6 +4,7 @@ from discord.ext import commands
 import discord
 from discord.utils import get
 import random
+from bot import firebase
 
 
 class create_channel(commands.Cog):
@@ -21,6 +22,7 @@ class create_channel(commands.Cog):
             category = ""
             # checks to see if a user is not an admin and tries to run the command, stop
             if not context.message.author.guild_permissions.administrator:
+                await context.message.add_reaction('❌')
                 await context.send("You cannot use this command, you are not an admin")
                 return
 
@@ -45,13 +47,15 @@ class create_channel(commands.Cog):
             category_name = discord.utils.get(
                 context.guild.categories, name=args2.lower())
 
+            created_roles = []
             # if the channels are not created but the category is, adds them to the category
             for i in range(channel_number):
                 if i < 25:
                     category_channels = category.channels
 
                     if discord.utils.get(category_channels, name=str(i+1)) is None:
-                        await guild.create_role(name=f'{args2.lower()} {i + 1}')
+                        createdrole = await guild.create_role(name=f'{args2.lower()} {i + 1}')
+                        created_roles.append(createdrole.name)
                         await asyncio.sleep(0.1)
                         specific_role = discord.utils.get(
                             guild.roles, name=f'{args2.lower()} {i+1}')
@@ -66,10 +70,12 @@ class create_channel(commands.Cog):
                         await asyncio.sleep(0.1)
                         await guild.create_voice_channel(f'{i+1}', overwrites=overwrites, category=category_name)
                         await asyncio.sleep(0.1)
-
-            await context.message.add_reaction('👍')
+            firebase.DB_set({category_name.name: created_roles},
+                            'servers/' + str(context.guild.id) + '/createdroles')
+            await context.message.add_reaction('✅')
 
         except ValueError:
+            await context.message.add_reaction('❌')
             await context.send("the second argument needs to be an integer!")
 
 
