@@ -21,8 +21,19 @@ class FirebaseConnection():
         child.set(data)
 
     def DB_get(self, location):
+        try:
+            locations = location.split('/')
+            child = self.db
+            for l in locations:
+                child = child.child(l)
+            return child.get()
+        except Exception:
+            return None
+
+    def DB_remove(self, location):
+        print(location)
         locations = location.split('/')
         child = self.db
         for l in locations:
             child = child.child(l)
-        return child.get()
+        return child.remove()

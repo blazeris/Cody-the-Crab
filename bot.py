@@ -1,4 +1,3 @@
-from cogs.test import Test
 import discord
 import os
 import firebase_connect as fb
