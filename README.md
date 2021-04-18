@@ -4,7 +4,7 @@ Submission for BeachHacks 2021
 Nathan Lai
 Alexander Pham
 Dylan Huynh
-Nathan Lai
+Omar Avalos
 
 Commands
 %help
