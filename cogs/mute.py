@@ -6,7 +6,7 @@ class Mute(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command()
+    @commands.command(description = "Prevents non admin role from sending messages")
     async def hidetext(self, context):
         guild = context.guild
         roles = guild.roles
@@ -20,7 +20,7 @@ class Mute(commands.Cog):
                     print("Nope")
         await context.send("Locked text channels")
 
-    @commands.command()
+    @commands.command(description = "Allows non admin role to send messages")
     async def revealtext(self, context):
         guild = context.guild
         roles = guild.roles
@@ -34,7 +34,7 @@ class Mute(commands.Cog):
                     print("Nope")
         await context.send("Unlocked text channels")
 
-    @commands.command()
+    @commands.command(description = "Prevents non admin roles from entering voice channels")
     async def hidevoice(self, context):
         guild = context.guild
         roles = guild.roles
@@ -48,7 +48,7 @@ class Mute(commands.Cog):
                     print("Nope")
         await context.send("Locked voice channels")
 
-    @commands.command()
+    @commands.command(description = "Allows non admin roles to enter voice channels")
     async def revealvoice(self, context):
         guild = context.guild
         roles = guild.roles
