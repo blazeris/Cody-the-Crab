@@ -24,7 +24,7 @@ class HelpMenu(ListPageSource):
     def __init__(self, ctx, data):
         self.ctx = ctx
 
-        super().__init__(data, per_page=5)
+        super().__init__(data, per_page=4)
 
     async def write_page(self, menu, fields=[]):
         offset = (menu.current_page*self.per_page) + 1
@@ -36,18 +36,18 @@ class HelpMenu(ListPageSource):
         embed.set_thumbnail(url= "https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fab2ce1a7-3074-410e-84ac-d44e78ae88cb%2FByte_the_Shark.png?table=block&id=f76f6edc-694f-497f-a793-716dcfc1e340&width=600&userId=&cache=v2")
         embed.set_footer(text=f"{offset:,} - {min(len_data-1, offset+self.per_page-1):,} of {len_data-1:,} commands.")
 
+
         for name, value in fields:
-            embed.add_field(name=value, value=name, inline=False)
+            if value != '`help `':
+                embed.add_field(name=value, value=name, inline=False)
         return embed
 
     async def format_page(self, menu, entries):
         fields = []
 
-        print(entries)
 
         for entry in entries:
                 fields.append((entry.description, syntax(entry)))
-        fields.remove(('Opens the help menu!', '`help `'))
         return await self.write_page(menu, fields)
     
 
@@ -79,10 +79,10 @@ class Test(Cog):
             else:
                 await ctx.send("That command does not exist.")
 
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-            self.bot.cogs_ready.ready_up("help")
+    #@Cog.listener()
+   # async def on_ready(self):
+     #   if not self.bot.ready:
+      #      self.bot.cogs_ready.ready_up("help")
 
 
 def setup(bot):
