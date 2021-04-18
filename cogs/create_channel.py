@@ -45,8 +45,8 @@ class create_channel(commands.Cog):
             }
 
             for i in range(channel_number):
-                await guild.create_text_channel(f'{name.lower()} {i + 1}',overwrites = overwrites, category=category_name)
-                await guild.create_voice_channel(f'{name.lower()} {i + 1}', overwrites = overwrites, category=category_name)
+                await guild.create_text_channel(f'{args2.lower()} {i + 1}',overwrites = overwrites, category=category_name)
+                await guild.create_voice_channel(f'{args2.lower()} {i + 1}', overwrites = overwrites, category=category_name)
             await context.message.add_reaction('👍')
         
         except ValueError:
