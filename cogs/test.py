@@ -1,10 +1,10 @@
 from discord.ext import commands
 
+
 class Test(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         print("TEAKSJDTHJKDAFHKJ")
-    
 
     @commands.command()
     async def ping(self, context):
@@ -12,8 +12,6 @@ class Test(commands.Cog):
         await context.send("PONG")
 
 
-
 def setup(bot):
     bot.add_cog(Test(bot))
-    print("in setup")
-    
+    print("test loaded")
